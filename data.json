@@ -1,0 +1,75 @@
+{
+  "Books":[
+    {
+      "title": "Things Fall Apart",
+      "author": "Chinua Achebe",
+      "genre": "Historical Fiction",
+      "availability": "Available",
+      "coverImage": "/images/thingsfallapart.jpg"
+    },
+    {
+      "title": "Purple Hibiscus",
+      "author": "Chimamanda Ngozi Adichie",
+      "genre": "Coming-of-Age",
+      "availability": "Un-Available",
+      "coverImage": "/images/purple_hibiscus.jpg"
+    },
+    {
+      "title": "Half of a Yellow Sun",
+      "author": "Chimamanda Ngozi Adichie",
+      "genre": "Historical Fiction",
+      "availability": "Available",
+      "coverImage": "/images/halfa_sun.jpg"
+    },
+    {
+      "title": "Broken",
+      "author": " Fatima Bala",
+      "genre": "Romance novel, Fiction",
+      "availability": "Available",
+      "coverImage": "/images/broken.jpg"
+    },
+    {
+      "title": "Americanah",
+      "author": "Chimamanda Ngozi Adichie",
+      "genre": "Contemporary Fiction",
+      "availability": "Un-Available",
+      "coverImage": "/images/Americanah.jpg"
+    },
+    {
+      "title": "The Fishermen",
+      "author": "Chigozie Obioma",
+      "genre": "Psychological Drama",
+      "availability": "Available",
+      "coverImage": "/images/TheFishermen.jpg"
+    },
+    {
+      "title": "Stay with Me",
+      "author": "Ayobami Adebayo",
+      "genre": "Literary Fiction",
+      "availability": "Available",
+      "coverImage": "/images/staywithme.jpg"
+    },
+    {
+      "title": "Welcome to Lagos",
+      "author": "Chibundu Onuzo",
+      "genre": "Contemporary Fiction",
+      "availability": "Un-Available",
+      "coverImage": "/images/lagosimg.jpg"
+    },
+    {
+      "title": "Under the Udala Trees",
+      "author": "Chinelo Okparanta",
+      "genre": "Historical Fiction",
+      "availability": "Available",
+      "coverImage": "/images/undertree.jpg"
+    },
+    {
+      "title": "Oil on Water",
+      "author": "Helon Habila",
+      "genre": "Political Thriller",
+      "availability": "Available",
+      "coverImage": "/images/oil_onwater.jpg"
+    }
+  ]
+}
+  
