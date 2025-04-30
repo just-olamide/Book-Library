@@ -11,7 +11,7 @@
       "title": "Purple Hibiscus",
       "author": "Chimamanda Ngozi Adichie",
       "genre": "Coming-of-Age",
-      "availability": "Un-Available",
+      "availability": "Checked Out",
       "coverImage": "/images/purple_hibiscus.jpg"
     },
     {
@@ -32,7 +32,7 @@
       "title": "Americanah",
       "author": "Chimamanda Ngozi Adichie",
       "genre": "Contemporary Fiction",
-      "availability": "Un-Available",
+      "availability": "Checked Out",
       "coverImage": "/images/Americanah.jpg"
     },
     {
@@ -53,7 +53,7 @@
       "title": "Welcome to Lagos",
       "author": "Chibundu Onuzo",
       "genre": "Contemporary Fiction",
-      "availability": "Un-Available",
+      "availability": "Checked Out",
       "coverImage": "/images/lagosimg.jpg"
     },
     {

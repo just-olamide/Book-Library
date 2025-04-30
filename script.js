@@ -191,40 +191,55 @@ async function loadAvailableBooks() {
       `;
       historyTable.appendChild(row);
     });
+
   });
 
 // Show signup form and hide login form
-document.getElementById("showSignup").addEventListener("click", function (e) {
+const showSignup = document.getElementById("showSignup");
+
+  showSignup.addEventListener("click", function (e) {
     e.preventDefault();
     document.getElementById("loginForm").classList.add("d-none");
     document.getElementById("signupForm").classList.remove("d-none");
     document.getElementById("formTitle").textContent = "Create an Account";
   });
-
+  
   // Show login form and hide signup form
-  document.getElementById("showLogin").addEventListener("click", function (e) {
+  const showLogin = document.getElementById("showLogin");
+
+  showLogin.addEventListener("click", function (e) {
     e.preventDefault();
     document.getElementById("signupForm").classList.add("d-none");
     document.getElementById("loginForm").classList.remove("d-none");
     document.getElementById("formTitle").textContent = "Login to Borrow Books";
   });
 
-  // Handle Login
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
 
+// Handle Login
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+  
     const loginEmail = document.getElementById("loginEmail").value.trim();
     const loginPassword = document.getElementById("loginPassword").value.trim();
-
+  
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const user = users.find(user => user.email === loginEmail && user.password === loginPassword);
-
+  
     if (user) {
-      window.location.href = "catalogue.html";
+      // Save logged in user to localStorage
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+  
+      // Redirect based on role
+      if (user.email === "librarian@library.com") {
+        window.location.href = "Admin.html";  // Librarian
+      } else {
+        window.location.href = "profile.html";  // Regular user
+      }
     } else {
       alert("Invalid email or password!");
     }
   });
+  
 
   // Handle Signup
   document.getElementById("signupForm").addEventListener("submit", function (e) {
@@ -297,75 +312,89 @@ document.getElementById("showSignup").addEventListener("click", function (e) {
     document.getElementById("formTitle").textContent = "Login to Borrow Books";
   });
 
-
   //Admin dashboard
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const totalBooksEl = document.getElementById("totalBooks");
-    const borrowedCountEl = document.getElementById("borrowedCount");
-    const activeUsersEl = document.getElementById("activeUsers");
-    const mostBorrowedEl = document.getElementById("mostBorrowedBook");
-    const recentBorrowingsEl = document.getElementById("recentBorrowings");
   
-    async function loadDashboard() {
-      try {
-        // Load books from data.json
-        const response = await fetch("data.json");
-        const books = await response.json();
-        totalBooksEl.textContent = books.length;
-  
-        // Get borrowing history from localStorage
-        const history = JSON.parse(localStorage.getItem("borrowHistory")) || [];
-  
-        borrowedCountEl.textContent = history.length;
-  
-        // Get unique user emails
-        const uniqueUsers = [...new Set(history.map(entry => entry.userEmail))];
-        activeUsersEl.textContent = uniqueUsers.length;
-  
-        // Count most borrowed book
-        const borrowCount = {};
-        history.forEach(entry => {
-          borrowCount[entry.bookTitle] = (borrowCount[entry.bookTitle] || 0) + 1;
-        });
-  
-        let mostBorrowed = "N/A";
-        let maxBorrows = 0;
-        for (let title in borrowCount) {
-          if (borrowCount[title] > maxBorrows) {
-            mostBorrowed = title;
-            maxBorrows = borrowCount[title];
-          }
-        }
-  
-        mostBorrowedEl.textContent = mostBorrowed;
-  
-        // Show recent 5 borrowings
-        const recent = history.slice(-5).reverse();
-        if (recent.length === 0) {
-          recentBorrowingsEl.innerHTML = `<tr><td colspan="3">No borrowings yet.</td></tr>`;
-        } else {
-          recentBorrowingsEl.innerHTML = recent.map(entry => `
-            <tr>
-              <td>${entry.userEmail}</td>
-              <td>${entry.bookTitle}</td>
-              <td>${new Date(entry.date).toLocaleDateString()}</td>
-            </tr>
-          `).join("");
-        }
-      } catch (err) {
-        console.error("Error loading dashboard:", err);
-      }
-    }
-  
+// Fetch and initialize dashboard
+document.addEventListener("DOMContentLoaded", () => {
     loadDashboard();
   });
   
+  // Global data holders
+//    books = [];
+  let borrowHistory = [];
+  let users = [];
+  
+  async function loadDashboard() {
+    try {
+      const response = await fetch("data.json");
+      const data = await response.json();
+      
+      books = data.books;
+      borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
+      users = JSON.parse(localStorage.getItem("users")) || [];
+  
+      updateStats();
+      renderBooks(books);
+      renderBorrowHistory();
+      renderMostBorrowed();
+      renderRecentActivity();
+    } catch (error) {
+      console.error("Error loading data:", error);
+    }
+  }
+  
+  // Update dashboard stats
+  function updateStats() {
+    const total = books.length;
+    const borrowed = books.filter(book => book.availability === "borrowed").length;
+    const available = total - borrowed;
+    const activeUsers = users.length;
+  
+    document.getElementById("totalBooks").textContent = total;
+    document.getElementById("borrowedBooks").textContent = borrowed;
+    document.getElementById("availableBooks").textContent = available;
+    document.getElementById("activeUsers").textContent = activeUsers;
+  }
+  
+  // Render books in the table
+  function renderBooks(bookList) {
+    const tbody = document.getElementById("bookTableBody");
+    tbody.innerHTML = "";
+  
+    bookList.forEach((book, index) => {
+      const row = document.createElement("tr");
+  
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.genre || "N/A"}</td>
+        <td><span class="badge bg-${book.availability === 'available' ? 'success' : 'secondary'}">${book.availability}</span></td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteBook(${index})">Delete</button>
+        </td>
+      `;
+  
+      tbody.appendChild(row);
+    });
+  }
+  
+
+
+  
+// Check if the logged-in user is a librarian
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
+  // Redirect to login if not a librarian
+  window.location.href = "login.html";
+}
+
 
   //creating profile
   document.addEventListener("DOMContentLoaded", function() {
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Assuming the logged-in user is stored here
+    // const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Assuming the logged-in user is stored here
   
     if (currentUser) {
       const userDetails = document.getElementById("userDetails");
@@ -480,4 +509,20 @@ document.getElementById("showSignup").addEventListener("click", function (e) {
     //   window.location.href = "login.html"; // Redirect to login page if no user is logged in
     }
   });
+  
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // other listeners...
+  
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+  });
+  
+  function handleLogout(e) {
+    e.preventDefault(); // prevent link default behavior
+    localStorage.removeItem('loggedInUser'); // clear user session
+    window.location.href = 'index.html'; // redirect to homepage
+  }
   

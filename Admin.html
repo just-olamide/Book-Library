@@ -1,84 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Librarian Dashboard</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">📚 TASUED Library</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html">Login/SignUp</a></li>
-                    <li class="nav-item"><a class="nav-link" href="admin.html">Admin</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="catalogue.html">Catalogue</a></li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                          Profile</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <li><a class="dropdown-item" href="profile.html">View Profile</a></li>
-                          <li><a class="dropdown-item" href="#">Logout</a></li>
-                        </ul>
-                      </li>
-                </ul>
-            </div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">📚 TASUED Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Admin</a></li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Profile</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="profile.html">View Profile</a></li>
+                        <li><a class="dropdown-item" href="index.html">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <div class="container mt-5">
-    <h2 class="text-center mb-4">📊 Librarian Dashboard</h2>
-    
+
+  <!-- Main Dashboard Container -->
+  <div class="container mt-4">
+
+    <!-- Top Stats -->
     <div class="row text-center mb-4">
       <div class="col-md-3">
-        <div class="p-3 border rounded shadow-sm bg-primary">
-          <h5>Total Books</h5>
-          <p id="totalBooks" class="fs-4 fw-bold">100</p>
+        <div class="card text-bg-primary shadow">
+          <div class="card-body">
+            <h5>Total Books</h5>
+            <p id="totalBooks" class="display-6">0</p>
+          </div>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="p-3 border rounded shadow-sm bg-secondary">
-          <h5>Books Borrowed</h5>
-          <p id="borrowedCount" class="fs-4 fw-bold">45</p>
+        <div class="card text-bg-success shadow">
+          <div class="card-body">
+            <h5>Borrowed Books</h5>
+            <p id="borrowedBooks" class="display-6">0</p>
+          </div>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="p-3 border rounded shadow-sm bg-warning">
-          <h5>Active Users</h5>
-          <p id="activeUsers" class="fs-4 fw-bold">10</p>
+        <div class="card text-bg-info shadow">
+          <div class="card-body">
+            <h5>Available Books</h5>
+            <p id="availableBooks" class="display-6">0</p>
+          </div>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="p-3 border rounded shadow-sm bg-info">
-          <h5>Most Borrowed</h5>
-          <p id="mostBorrowedBook" class="fs-4 fw-bold">5</p>
+        <div class="card text-bg-warning shadow">
+          <div class="card-body">
+            <h5>Active Users</h5>
+            <p id="activeUsers" class="display-6">0</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <h4 class="mb-3">🕓 Recent Borrowings</h4>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Book</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="recentBorrowings">
-        <tr><td colspan="3">Loading...</td></tr>
-      </tbody>
-    </table>
+    <!-- Book Management Section -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h4>📚 Book Management</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookModal">Add Book</button>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by title or author...">
+          </div>
+          <div class="col-md-6">
+            <select id="categoryFilter" class="form-select">
+              <option value="">All Categories</option>
+              <option value="fiction">Fiction</option>
+              <option value="non-fiction">Non-Fiction</option>
+              <option value="science">Science</option>
+              <option value="history">History</option>
+              <option value="technology">Technology</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+              <tr>
+                <!-- <th>ID</th> -->
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookTableBody">
+              <!-- JS will populate -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Borrowing History -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>🕒 Recent Borrowings</h4>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>User</th>
+              <th>Book</th>
+              <th>Borrow Date</th>
+              <th>Due Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="borrowHistoryTable">
+            <!-- JS will populate -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Most Borrowed & Recent Activity -->
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>🔥 Most Borrowed Books</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group" id="mostBorrowedList">
+              <!-- JS will populate -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>🧾 Recent Activity</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group" id="recentActivityList">
+              <!-- JS will populate -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Add Book Modal -->
+  <div class="modal fade" id="addBookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="addBookForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Book</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="bookTitle" class="form-label">Title</label>
+            <input type="text" class="form-control" id="bookTitle" required>
+          </div>
+          <div class="mb-3">
+            <label for="bookAuthor" class="form-label">Author</label>
+            <input type="text" class="form-control" id="bookAuthor" required>
+          </div>
+          <div class="mb-3">
+            <label for="bookCategory" class="form-label">Category</label>
+            <select class="form-select" id="bookCategory" required>
+              <option value="">Select</option>
+              <option value="fiction">Fiction</option>
+              <option value="non-fiction">Non-Fiction</option>
+              <option value="science">Science</option>
+              <option value="history">History</option>
+              <option value="technology">Technology</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="bookCopies" class="form-label">Copies</label>
+            <input type="number" class="form-control" id="bookCopies" min="1" value="1" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
