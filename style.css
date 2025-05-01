@@ -47,7 +47,15 @@ body {
 #about p {
     color: #555;
 }
+.cardd{
+    text-align: center;
+}
 
+.images{
+    width: 50%;
+    display: block;
+    margin: 0 auto;
+}
 .card {
     background-color: #f8f9fa;
     border-radius: 8px;
@@ -72,6 +80,9 @@ footer p {
 .lead{
     width: 50%;
     margin: 0 auto;
+}
+#welcome{
+    width: 100%;
 }
 @keyframes fadeInUp {
     from {
@@ -103,3 +114,4 @@ footer p {
 .subb h4{
     color: #212529;
 }
+

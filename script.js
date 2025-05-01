@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
   
-//catalogue
+//catalogue Available books
 
 let books = [];
 
@@ -36,12 +36,12 @@ function displayBooks(bookList) {
 
   bookList.forEach(book => {
     const card = document.createElement("div");
-    card.className = "col-md-4 mb-4";
+    card.className = "col-md-4 mb-4 cardd";
 
     const isAvailable = book.availability === "Available";
     card.innerHTML = `
       <div class="card h-100 shadow-sm">
-        <img src="${book.coverImage}" class="card-img-top" alt="${book.title}">
+        <img src="${book.coverImage}" class="card-img-top images" alt="${book.title}">
         <div class="card-body">
           <h5 class="card-title">${book.title}</h5>
           <p class="card-text"><strong>Author:</strong> ${book.author}</p>
@@ -65,6 +65,8 @@ function displayBooks(bookList) {
   });
 }
 
+
+// Live filtering
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const genreInput = document.getElementById("genreInput");
@@ -79,7 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Failed to load book data:", error);
   }
 
-  // Live filtering
   [searchInput, genreInput].forEach(input => {
     input.addEventListener("input", () => {
       const titleQuery = searchInput.value.toLowerCase().trim();
@@ -100,28 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-
-  // Populate available books
-async function loadAvailableBooks() {
-    try {
-      const res = await fetch('data.json');
-      const data = await res.json();
-  
-      const availableBooks = data.Books.filter(book => book.availability === "Available");
-      const bookSelect = document.getElementById('bookSelect');
-  
-      availableBooks.forEach(book => {
-        const option = document.createElement('option');
-        option.value = book.title;
-        option.textContent = `${book.title} by ${book.author}`;
-        bookSelect.appendChild(option);
-      });
-  
-      localStorage.setItem('libraryBooks', JSON.stringify(data.Books));
-    } catch (error) {
-      console.error('Error loading books:', error);
-    }
-  }
 
   //borrow page
   document.addEventListener("DOMContentLoaded", async () => {
@@ -166,6 +145,7 @@ async function loadAvailableBooks() {
   });
   
 
+
   //history page
   document.addEventListener("DOMContentLoaded", () => {
     const history = JSON.parse(localStorage.getItem("borrowHistory")) || [];
@@ -204,7 +184,6 @@ const showSignup = document.getElementById("showSignup");
     document.getElementById("formTitle").textContent = "Create an Account";
   });
   
-  // Show login form and hide signup form
   const showLogin = document.getElementById("showLogin");
 
   showLogin.addEventListener("click", function (e) {
@@ -226,14 +205,12 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     const user = users.find(user => user.email === loginEmail && user.password === loginPassword);
   
     if (user) {
-      // Save logged in user to localStorage
       localStorage.setItem("loggedInUser", JSON.stringify(user));
   
-      // Redirect based on role
       if (user.email === "librarian@library.com") {
-        window.location.href = "Admin.html";  // Librarian
+        window.location.href = "Admin.html"; 
       } else {
-        window.location.href = "profile.html";  // Regular user
+        window.location.href = "profile.html"; 
       }
     } else {
       alert("Invalid email or password!");
@@ -312,6 +289,14 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     document.getElementById("formTitle").textContent = "Login to Borrow Books";
   });
 
+
+  // Check if the logged-in user is a librarian
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
+  window.location.href = "login.html";
+}
+
   //Admin dashboard
   
 // Fetch and initialize dashboard
@@ -378,23 +363,11 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(row);
     });
   }
-  
-
-
-  
-// Check if the logged-in user is a librarian
-const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
-if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
-  // Redirect to login if not a librarian
-  window.location.href = "login.html";
-}
-
 
   //creating profile
   document.addEventListener("DOMContentLoaded", function() {
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    // const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Assuming the logged-in user is stored here
+     const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Assuming the logged-in user is stored here
   
     if (currentUser) {
       const userDetails = document.getElementById("userDetails");
@@ -420,12 +393,10 @@ if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
         returnBtn.textContent = "Return";
         returnBtn.classList.add("btn", "btn-danger", "btn-sm", "ms-3");
   
-        // Add return functionality
         returnBtn.addEventListener("click", function() {
           returnBook(book);
         });
   
-        // Append the button to the list item
         listItem.appendChild(returnBtn);
         borrowedBooksList.appendChild(listItem);
       });
@@ -456,7 +427,7 @@ if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
         currentUser.name = newName;
         currentUser.email = newEmail;
         if (newPassword) {
-          currentUser.password = newPassword; // Only update password if provided
+          currentUser.password = newPassword; 
         }
   
         // Update the users list in localStorage
@@ -480,21 +451,19 @@ if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
   
       // Function to return a borrowed book
       function returnBook(bookToReturn) {
-        // Remove the book from the user's borrowed books list
         currentUser.borrowedBooks = currentUser.borrowedBooks.filter(book => book !== bookToReturn);
   
         // Update the catalog to mark the book as available
         const books = JSON.parse(localStorage.getItem("books")) || [];
         const bookIndex = books.findIndex(book => book.title === bookToReturn.title);
         if (bookIndex !== -1) {
-          books[bookIndex].availability = true; // Mark the book as available again
+          books[bookIndex].availability = true;
           localStorage.setItem("books", JSON.stringify(books));
         }
   
         // Update the current user's borrowed books in localStorage
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
   
-        // Update the UI: Remove the book from the borrowed books list
         const bookItems = borrowedBooksList.getElementsByTagName("li");
         for (let item of bookItems) {
           if (item.textContent.includes(bookToReturn.title)) {
@@ -506,14 +475,11 @@ if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
       }
     } else {
       alert("Please log in to view your profile.");
-    //   window.location.href = "login.html"; // Redirect to login page if no user is logged in
     }
   });
   
 
   document.addEventListener('DOMContentLoaded', () => {
-    // other listeners...
-  
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', handleLogout);
@@ -521,8 +487,8 @@ if (!loggedInUser || loggedInUser.email !== "librarian@library.com") {
   });
   
   function handleLogout(e) {
-    e.preventDefault(); // prevent link default behavior
-    localStorage.removeItem('loggedInUser'); // clear user session
-    window.location.href = 'index.html'; // redirect to homepage
+    e.preventDefault(); 
+    localStorage.removeItem('loggedInUser'); 
+    window.location.href = 'index.html';
   }
   
