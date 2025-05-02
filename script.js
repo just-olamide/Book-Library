@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //creating profile
   document.addEventListener("DOMContentLoaded", function() {
     const users = JSON.parse(localStorage.getItem("users")) || [];
-     const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Assuming the logged-in user is stored here
+     const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
   
     if (currentUser) {
       const userDetails = document.getElementById("userDetails");
