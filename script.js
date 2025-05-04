@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let books = [];
 
   // Login check
-  function checkLogin() {
-    const user = localStorage.getItem("loggedInUser");
-    // if (!user) {
-    //   alert("Please log in first.");
+   function checkLogin() {
+     const user = localStorage.getItem("loggedInUser");
+     if (!user) {
+    //  alert("Please log in first.");
     //   // window.location.href = "login.html";
-    // }
+    }
   }
 
   // Load books
@@ -115,8 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
       book: books[index].title,
       author: books[index].author,
       date: new Date().toLocaleString(),
-      dueDate: dueDate.toLocaleDateString(),
-  returned: false
     });
 
     localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
@@ -472,11 +470,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
   const historyTableBody = document.getElementById("historyTableBody");
 
-  if (!user) {
-    alert("Please log in first.");
-    window.location.href = "login.html";
-    return;
-  }
+  // if (!user) {
+  //   alert("Please log in first.");
+  //   // window.location.href = "login.html";
+  //   return;
+  // }
 
   const history = JSON.parse(localStorage.getItem("borrowHistory")) || [];
   const userHistory = history.filter(h => h.user === user.email);
