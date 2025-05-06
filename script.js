@@ -34,6 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Populate genres
   function populateGenres() {
+    const genreFilter = document.getElementById("genreFilter");
+    if (!genreFilter) {
+      console.warn("genreFilter element not found in the DOM.");
+      return;
+    }
+
     const genres = [...new Set(books.map(book => book.genre))];
     genres.forEach(genre => {
       const option = document.createElement("option");
@@ -294,6 +300,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to calculate and update the library stats
   function calculateLibraryStatus() {
+    const availableBooksElement = document.getElementById("availableBooks");
+    const borrowedBooksElement = document.getElementById("borrowedBooks");
+    const totalBooksElement = document.getElementById("totalBooks");
+    const totalBorrowedElement = document.getElementById("totalBorrowed");
+
+    if (!availableBooksElement || !borrowedBooksElement || !totalBooksElement || !totalBorrowedElement) {
+      console.warn("One or more elements for library status not found in the DOM.");
+      return;
+    }
+
     const availableBooks = books.filter(book => book.available).length;
     const borrowedBooks = books.filter(book => !book.available).length;
     const totalBooks = books.length;
@@ -636,6 +652,140 @@ document.addEventListener("DOMContentLoaded", () => {
       location.reload();
     });
   });
+
+  const catalogueBooksDiv = document.getElementById("catalogueBooks");
+
+  // Function to display available books in the catalogue
+  function displayCatalogueBooks() {    const books = JSON.parse(localStorage.getItem("books")) || [];
+    const availableBooks = books.filter(book => book.available);
+
+    catalogueBooksDiv.innerHTML = availableBooks.map(book => {
+      return `
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <img 
+              src="${book.cover || 'images/book image.jpg'}" 
+              class="card-img-top" 
+              alt="${book.title}"
+              style="height: 300px; object-fit: cover;"
+              onerror="this.src='images/book image.jpg'; this.onerror=null;"
+            >
+            <div class="card-body">
+              <h5 class="card-title">${book.title}</h5>
+              <p class="card-text mb-1"><strong>Author:</strong> ${book.author}</p>
+              <p class="card-text mb-1"><strong>Genre:</strong> ${book.genre}</p>
+              <button class="btn btn-primary w-100 borrow-book" data-book-title="${book.title}">Borrow</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // Add event listeners for borrow buttons
+    document.querySelectorAll(".borrow-book").forEach(button => {
+      button.addEventListener("click", function () {
+        const bookTitle = this.getAttribute("data-book-title");
+        borrowBookFromCatalogue(bookTitle);
+      });
+    });
+  }
+
+  // Ensure catalogue is displayed on page load
+  displayCatalogueBooks();
+
+  // Function to borrow a book from the catalogue
+  function borrowBookFromCatalogue(bookTitle) {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!user) return alert("You must be logged in.");
+
+    const bookIndex = books.findIndex(book => book.title === bookTitle);
+    if (bookIndex !== -1) {
+      books[bookIndex].available = false;
+
+      const borrowDate = new Date();
+      const dueDate = new Date(borrowDate);
+      dueDate.setDate(borrowDate.getDate() + 7); // Set due date to 7 days from borrow date
+
+      const borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
+      borrowHistory.push({
+        user: user.email,
+        book: books[bookIndex].title,
+        author: books[bookIndex].author,
+        date: borrowDate.toLocaleString(),
+        dueDate: dueDate.toLocaleString(),
+        returned: false
+      });
+
+      localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
+      localStorage.setItem("books", JSON.stringify(books));
+      alert(`You have successfully borrowed "${bookTitle}".`);
+      displayCatalogueBooks();
+      displayBorrowedBooks();
+    }
+  }
+
+  // Call displayCatalogueBooks on page load
+  displayCatalogueBooks();
+
+  // Function to update borrowed books section after borrowing from the catalogue
+  function displayBorrowedBooks() {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    const userBorrowedBooks = borrowHistory
+      .filter(entry => entry.user === user.email && !entry.returned)
+      .map(entry => {
+        const book = books.find(b => b.title === entry.book);
+        if (book) {
+          return {
+            ...entry,
+            cover: book.cover,
+            genre: book.genre
+          };
+        }
+        return entry;
+      });
+
+    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0
+      ? `<div class="col-12">
+           <div class="alert alert-info">
+             You haven't borrowed any books yet. 
+             <a href="catalogue.html" class="alert-link">Browse our catalogue</a> to find books to borrow.
+           </div>
+         </div>`
+      : userBorrowedBooks.map(book => {
+          const borrowDate = new Date(book.date);
+          const dueDate = new Date(book.dueDate);
+          return `
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 shadow-sm">
+                <img 
+                  src="${book.cover || 'images/book image.jpg'}" 
+                  class="card-img-top" 
+                  alt="${book.book}"
+                  style="height: 300px; object-fit: cover;"
+                  onerror="this.src='images/book image.jpg'; this.onerror=null;"
+                >
+                <div class="card-body">
+                  <h5 class="card-title">${book.book}</h5>
+                  <p class="card-text mb-1"><strong>Author:</strong> ${book.author}</p>
+                  ${book.genre ? `<p class="card-text mb-1"><strong>Genre:</strong> ${book.genre}</p>` : ''}
+                  <p class="card-text mb-1"><strong>Borrowed:</strong> ${borrowDate.toLocaleDateString()}</p>
+                  <p class="card-text text-danger mb-3"><strong>Due:</strong> ${dueDate.toLocaleDateString()}</p>
+                  <button class="btn btn-success w-100 return-book" data-book-title="${book.book}">Return Book</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+    // Add event listeners for return buttons
+    document.querySelectorAll('.return-book').forEach(button => {
+      button.addEventListener('click', function() {
+        const bookTitle = this.getAttribute('data-book-title');
+        returnBorrowedBook(bookTitle);
+      });
+    });
+  }
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {
