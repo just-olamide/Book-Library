@@ -415,6 +415,68 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  const overdueBooksElement = document.getElementById("overdueBooks");
+
+  // Function to display all borrowed books, highlighting overdue ones
+  function displayBorrowedBooks() {
+    const today = new Date();
+    const borrowedBooks = borrowHistory.filter(entry => !entry.returned);
+
+    overdueBooksElement.innerHTML = borrowedBooks.map(entry => {
+      const dueDate = new Date(entry.dueDate);
+      const isOverdue = dueDate < today;
+      const daysOverdue = isOverdue ? Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24)) : 0;
+
+      return `
+        <tr class="${isOverdue ? 'table-danger' : ''}">
+          <td>${entry.book}</td>
+          <td>${entry.author}</td>
+          <td>${entry.user}</td>
+          <td>${dueDate.toLocaleDateString()}</td>
+          <td>${isOverdue ? `${daysOverdue} days overdue` : 'On time'}</td>
+          <td>
+            <button class="btn btn-success btn-sm return-borrowed" data-book-title="${entry.book}">Return</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // Add event listeners for return buttons
+    document.querySelectorAll(".return-borrowed").forEach(button => {
+      button.addEventListener("click", function () {
+        const bookTitle = this.getAttribute("data-book-title");
+        returnBorrowedBook(bookTitle);
+      });
+    });
+  }
+
+  // Function to return a borrowed book with confirmation
+  function returnBorrowedBook(bookTitle) {
+    if (!confirm(`Are you sure you want to return the book "${bookTitle}"?`)) {
+      return; // Exit if the user cancels the confirmation
+    }
+
+    const bookIndex = books.findIndex(book => book.title === bookTitle);
+    if (bookIndex !== -1) {
+      books[bookIndex].available = true;
+      localStorage.setItem("books", JSON.stringify(books));
+    }
+
+    const historyIndex = borrowHistory.findIndex(entry => entry.book === bookTitle && !entry.returned);
+    if (historyIndex !== -1) {
+      borrowHistory[historyIndex].returned = true;
+      borrowHistory[historyIndex].returnDate = new Date().toLocaleString();
+      localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
+    }
+
+    alert(`The book "${bookTitle}" has been successfully returned.`);
+    displayBorrowedBooks();
+    calculateLibraryStatus();
+  }
+
+  // Call displayBorrowedBooks on page load
+  displayBorrowedBooks();
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -569,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.getElementById("logoutBtn")?.addEventListener("click", () => {
   localStorage.removeItem("loggedInUser");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 });
 
 
