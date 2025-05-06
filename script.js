@@ -348,9 +348,59 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Update the list view
     genreDistributionElement.innerHTML = Object.entries(genreCounts)
-      .map(([genre, count]) => `<li>${genre}: ${count} books</li>`)
+      .map(([genre, count]) => `<li class="list-group-item d-flex justify-content-between align-items-center">
+        ${genre}
+        <span class="badge bg-primary rounded-pill">${count} books</span>
+      </li>`)
       .join("");
+
+    // Create the chart
+    const ctx = document.getElementById('genreChart');
+    
+    // Destroy existing chart if it exists
+    if (window.genreChartInstance) {
+      window.genreChartInstance.destroy();
+    }
+
+    // Create new chart
+    window.genreChartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(genreCounts),
+        datasets: [{
+          data: Object.values(genreCounts),
+          backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#4BC0C0',
+            '#9966FF',
+            '#FF9F40',
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#4BC0C0',
+            '#9966FF',
+            '#FF9F40'
+          ],
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          },
+          title: {
+            display: true,
+            text: 'Book Distribution by Genre'
+          }
+        }
+      }
+    });
   }
 
   // Initial calculation
