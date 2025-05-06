@@ -18,6 +18,17 @@ body.dark-theme {
   transition: background-color 0.3s ease;
 }
 
+body.dark-theme .form-label,
+body.dark-theme input,
+body.dark-theme button,
+body.dark-theme a {
+  color: var(--text-dark) !important;
+}
+
+body.dark-theme input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .navbar,
 footer {
   background-color: inherit;

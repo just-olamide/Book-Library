@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  // Function to display genre distribution
+  // Function to display genre distribution using a bar chart
   function displayGenreDistribution() {
     const genreCounts = {};
 
@@ -358,46 +358,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create the chart
     const ctx = document.getElementById('genreChart');
-    
+
     // Destroy existing chart if it exists
     if (window.genreChartInstance) {
       window.genreChartInstance.destroy();
     }
 
-    // Create new chart
+    // Define a modern color palette
+    const colors = [
+      '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+      '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+    ];
+
+    // Create new bar chart
     window.genreChartInstance = new Chart(ctx, {
-      type: 'doughnut',
+      type: 'bar',
       data: {
         labels: Object.keys(genreCounts),
         datasets: [{
+          label: 'Number of Books',
           data: Object.values(genreCounts),
-          backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40',
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40'
-          ],
-          hoverOffset: 4
+          backgroundColor: colors,
+          borderColor: '#ffffff',
+          borderWidth: 1
         }]
       },
       options: {
         responsive: true,
         plugins: {
           legend: {
-            position: 'bottom',
+            display: false
           },
           title: {
             display: true,
-            text: 'Book Distribution by Genre'
+            text: 'Book Distribution by Genre',
+            font: {
+              size: 20,
+              family: 'Poppins, sans-serif',
+              weight: 'bold'
+            },
+            color: '#222'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                return `${label}: ${value} books`;
+              }
+            }
           }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Genres',
+              font: {
+                size: 14,
+                family: 'Poppins, sans-serif',
+                weight: 'bold'
+              },
+              color: '#333'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Number of Books',
+              font: {
+                size: 14,
+                family: 'Poppins, sans-serif',
+                weight: 'bold'
+              },
+              color: '#333'
+            },
+            beginAtZero: true
+          }
+        },
+        layout: {
+          padding: {
+            top: 20,
+            bottom: 20
+          }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
         }
       }
     });

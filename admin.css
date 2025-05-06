@@ -8,3 +8,123 @@
   max-height: 300px;
   overflow-y: auto;
 }
+
+/* Modernized Admin Page Styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+}
+
+/* Fixing navbar color */
+.navbar {
+  background-color: #343a40 !important; /* Restoring original dark color */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-brand {
+  color: white !important;
+}
+
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.navbar .nav-link:hover {
+  color: white !important;
+}
+
+.navbar .btn {
+  border-color: white;
+  color: white;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.card h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.table {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.table td {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.btn {
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 16px;
+}
+
+.btn-success {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.btn-success:hover {
+  background-color: #45A049;
+  border-color: #45A049;
+}
+
+h1, h4 {
+  font-weight: bold;
+  color: #333;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+.list-group-item {
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item .badge {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
