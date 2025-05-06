@@ -106,15 +106,27 @@ document.addEventListener("DOMContentLoaded", () => {
   function borrowBook(index) {
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!user) return alert("You must be logged in.");
+    
+    // Prevent admin from borrowing books
+    if (user.role === 'admin') {
+      alert("Administrators cannot borrow books. Please use a regular user account to borrow books.");
+      return;
+    }
 
     books[index].available = false;
+
+    const borrowDate = new Date();
+    const dueDate = new Date(borrowDate);
+    dueDate.setDate(borrowDate.getDate() + 7); // Set due date to 7 days from borrow date
 
     const borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
     borrowHistory.push({
       user: user.email,
       book: books[index].title,
       author: books[index].author,
-      date: new Date().toLocaleString(),
+      date: borrowDate.toLocaleString(),
+      dueDate: dueDate.toLocaleString(),
+      returned: false
     });
 
     localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
@@ -404,13 +416,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     return;
   }
+  
 
   // Render borrowed books
   userBorrowedBooks.forEach(book => {
     const borrowDate = new Date(book.date);
     const dueDate = new Date(borrowDate);
     dueDate.setDate(borrowDate.getDate() + 7);
-
     const col = document.createElement("div");
     col.className = "col-md-6 col-lg-4";
     col.innerHTML = `
@@ -439,6 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.return-book').forEach(button => {
     button.addEventListener('click', function() {
       const bookTitle = this.getAttribute('data-book-title');
+      const returnDate = new Date();
       
       // Update book availability
       const bookIndex = books.findIndex(b => b.title === bookTitle);
@@ -455,7 +468,8 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       if (historyIndex !== -1) {
         borrowHistory[historyIndex].returned = true;
-        borrowHistory[historyIndex].returnDate = new Date().toLocaleString();
+        borrowHistory[historyIndex].returnDate = returnDate.toLocaleString();
+        borrowHistory[historyIndex].dateReturned = returnDate.toLocaleString(); // Add both for consistency
         localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
       }
 
@@ -465,19 +479,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
   const historyTableBody = document.getElementById("historyTableBody");
 
-  // if (!user) {
-  //   alert("Please log in first.");
-  //   // window.location.href = "login.html";
-  //   return;
-  // }
+  if (!historyTableBody) return; // Only run on history page
 
   const history = JSON.parse(localStorage.getItem("borrowHistory")) || [];
-  const userHistory = history.filter(h => h.user === user.email);
+  const userHistory = history.filter(h => h.user === user?.email);
 
   if (userHistory.length === 0) {
     historyTableBody.innerHTML = `
@@ -487,13 +496,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   userHistory.forEach(entry => {
+    const borrowDate = new Date(entry.date);
+    const dueDate = entry.dueDate ? new Date(entry.dueDate) : new Date(borrowDate.getTime() + (7 * 24 * 60 * 60 * 1000));
+    const returnDate = entry.returnDate ? new Date(entry.returnDate) : null;
+
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${entry.book}</td>
       <td>${entry.author}</td>
-      <td>${entry.dateBorrowed}</td>
-      <td>${entry.dueDate}</td>
-      <td>${entry.returned ? entry.dateReturned : "-"}</td>
+      <td>${borrowDate.toLocaleDateString()}</td>
+      <td>${dueDate.toLocaleDateString()}</td>
+      <td>${returnDate ? returnDate.toLocaleDateString() : "-"}</td>
       <td>
         <span class="badge ${entry.returned ? 'bg-success' : 'bg-warning text-dark'}">
           ${entry.returned ? "Returned" : "Not Returned"}
@@ -503,4 +516,10 @@ document.addEventListener("DOMContentLoaded", () => {
     historyTableBody.appendChild(row);
   });
 });
+
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  localStorage.removeItem("loggedInUser");
+  window.location.href = "login.html";
+});
+
 

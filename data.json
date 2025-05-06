@@ -12,7 +12,7 @@
     "title": "Half of a Yellow Sun",
     "author": "Chimamanda Ngozi Adichie",
     "genre": "Historical Fiction",
-    "available": false,
+    "available": true,
     "cover": "images/halfa_sun.jpg"
   },
   {
@@ -52,7 +52,7 @@
     "title": "Efuru",
     "author": "Flora Nwapa",
     "genre": "Fiction",
-    "available": false,
+    "available": true,
     "cover": "images/Efuru.jpg"
   },
   {
@@ -84,7 +84,7 @@
     "title": "Be(com)ing Nigerian",
     "author": "Elnathan John",
     "genre": "Satire",
-    "available": false,
+    "available": true,
     "cover": "images/becomingNig.jpg"
   },
   {
