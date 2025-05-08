@@ -1,14 +1,14 @@
 /* Base Theme Styles */
 :root {
-  --bg-light: #f8f9fa;
-  --text-light: #212529;
-  --bg-dark: #121212;
-  --text-dark: #ffffff;
+  --bg-light: #f4f6f8;
+  --text-light: #161718;
+  --bg-dark: #4d4a4a;
+  --text-dark: #878080;
 }
 
 body.light-theme {
   background-color: var(--bg-light);
-  color: var(--text-light);
+  color: var(--text-dark);
   transition: background-color 0.3s ease;
 }
 
@@ -26,7 +26,8 @@ body.dark-theme a {
 }
 
 body.dark-theme input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+   /* color: rgba(255, 255, 255, 0.7); */
+   color: var(--text-light);
 }
 
 .navbar,
@@ -149,7 +150,7 @@ footer {
 /* Footer Styling */
 footer {
   background-color: var(--bg-light);
-  color: var(--text-light);
+  color: var(--text-dark);
   padding: 20px 0;
   margin-top: 40px;
 }

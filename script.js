@@ -1,3 +1,5 @@
+//load books from json file and display them in the catalogue
+
 document.addEventListener("DOMContentLoaded", () => {
   const bookList = document.getElementById("bookList");
   const searchInput = document.getElementById("searchInput");
@@ -13,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //   // window.location.href = "login.html";
     }
   }
-
   // Load books
   async function loadBooks() {
     try {
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function populateGenres() {
     const genreFilter = document.getElementById("genreFilter");
     if (!genreFilter) {
-      console.warn("genreFilter element not found in the DOM.");
+      console.log("genreFilter element not found in the DOM.");
       return;
     }
 
@@ -49,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Render book list
+  // Render book list that dynamically displays books
   function renderBooks(bookArray) {
     bookList.innerHTML = "";
 
@@ -123,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const borrowDate = new Date();
     const dueDate = new Date(borrowDate);
-    dueDate.setDate(borrowDate.getDate() + 7); // Set due date to 7 days from borrow date
+    dueDate.setDate(borrowDate.getDate() + 7); 
 
     const borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
     borrowHistory.push({
@@ -140,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBooks(books);
   }
 
-  // Load from localStorage or fetch fresh
+  // Load books localStorage or fetch fresh
   checkLogin();
   const saved = JSON.parse(localStorage.getItem("books"));
   if (saved && saved.length > 0) {
@@ -151,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadBooks();
   }
 
-  // Listeners
   searchInput.addEventListener("input", filterBooks);
   genreFilter.addEventListener("change", filterBooks);
 });
@@ -168,7 +168,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Toggle button event
 if (toggleBtn) {
   toggleBtn.addEventListener("click", () => {
     if (body.classList.contains("light-theme")) {
@@ -213,12 +212,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordError = document.getElementById("passwordError");
     const confirmPasswordError = document.getElementById("confirmPasswordError");
 
-    // Reset messages
     emailError.style.display = "none";
     passwordError.style.display = "none";
     confirmPasswordError.style.display = "none";
 
-    // Validate email
+    // Validate email and password
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       emailError.textContent = "Invalid email format.";
@@ -226,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validate password length
     if (password.length < 6) {
       passwordError.textContent = "Password must be at least 6 characters.";
       passwordError.style.display = "block";
@@ -266,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const adminUser = { name: "Admin", email, role: "admin" };
       localStorage.setItem("loggedInUser", JSON.stringify(adminUser));
       alert("Welcome, Admin!");
-      window.location.href = "Admin.html"; // Redirect to admin dashboard
+      window.location.href = "Admin.html";
       return;
     }
 
@@ -280,13 +277,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("loggedInUser", JSON.stringify(found));
     alert("Login successful!");
-    window.location.href = "profile.html"; // Redirect to catalogue
+    window.location.href = "profile.html";
   });
 });
 
-
+ // Admin data loading
 document.addEventListener("DOMContentLoaded", () => {
-  // Admin data loading
   const availableBooksElement = document.getElementById("availableBooks");
   const borrowedBooksElement = document.getElementById("borrowedBooks");
   const totalBooksElement = document.getElementById("totalBooks");
@@ -294,7 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const mostBorrowedElement = document.getElementById("mostBorrowed");
   const genreDistributionElement = document.getElementById("genreDistribution");
 
-  // Load books and borrow history from localStorage
   let books = JSON.parse(localStorage.getItem("books")) || [];
   let borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
 
@@ -315,16 +310,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalBooks = books.length;
     const totalBorrowed = borrowHistory.length;
 
-    // Update the dashboard with stats
     availableBooksElement.textContent = availableBooks;
     borrowedBooksElement.textContent = borrowedBooks;
     totalBooksElement.textContent = totalBooks;
     totalBorrowedElement.textContent = totalBorrowed;
 
-    // Calculate and display the most borrowed books
     displayMostBorrowedBooks();
-
-    // Calculate and display the genre distribution
     displayGenreDistribution();
   }
 
@@ -344,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sort by most borrowed
     const mostBorrowedBooks = Object.entries(bookCounts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 5); // Show top 5 most borrowed books
+      .slice(0, 5); 
 
     mostBorrowedElement.innerHTML = mostBorrowedBooks
       .map(([book, count]) => `<li>${book} - Borrowed ${count} times</li>`)
@@ -372,15 +363,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </li>`)
       .join("");
 
-    // Create the chart
-    const ctx = document.getElementById('genreChart');
 
+    const ctx = document.getElementById('genreChart');
     // Destroy existing chart if it exists
     if (window.genreChartInstance) {
       window.genreChartInstance.destroy();
     }
 
-    // Define a modern color palette
     const colors = [
       '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
       '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
@@ -466,7 +455,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initial calculation
   calculateLibraryStatus();
 
   // Optionally, you can reload and recalculate when books or borrow history data changes
@@ -516,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to return a borrowed book with confirmation
   function returnBorrowedBook(bookTitle) {
     if (!confirm(`Are you sure you want to return the book "${bookTitle}"?`)) {
-      return; // Exit if the user cancels the confirmation
+      return; 
     }
 
     const bookIndex = books.findIndex(book => book.title === bookTitle);
@@ -537,11 +525,11 @@ document.addEventListener("DOMContentLoaded", () => {
     calculateLibraryStatus();
   }
 
-  // Call displayBorrowedBooks on page load
   displayBorrowedBooks();
 
 });
 
+  // Display user details
 document.addEventListener("DOMContentLoaded", () => {
   const userDetails = document.getElementById("userDetails");
   const borrowedBooksDiv = document.getElementById("borrowedBooks");
@@ -558,7 +546,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Display user details
   userDetails.innerHTML = `
     <h4 class="mb-3">Personal Information</h4>
     <p class="mb-2"><strong>Name:</strong> ${user.name}</p>
@@ -592,7 +579,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
   
-
   // Render borrowed books
   userBorrowedBooks.forEach(book => {
     const borrowDate = new Date(book.date);
@@ -644,7 +630,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (historyIndex !== -1) {
         borrowHistory[historyIndex].returned = true;
         borrowHistory[historyIndex].returnDate = returnDate.toLocaleString();
-        borrowHistory[historyIndex].dateReturned = returnDate.toLocaleString(); // Add both for consistency
+        borrowHistory[historyIndex].dateReturned = returnDate.toLocaleString();
         localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
       }
 
@@ -689,8 +675,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-
-  // Ensure catalogue is displayed on page load
   displayCatalogueBooks();
 
   // Function to borrow a book from the catalogue
@@ -704,7 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const borrowDate = new Date();
       const dueDate = new Date(borrowDate);
-      dueDate.setDate(borrowDate.getDate() + 7); // Set due date to 7 days from borrow date
+      dueDate.setDate(borrowDate.getDate() + 7);
 
       const borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
       borrowHistory.push({
@@ -724,7 +708,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Call displayCatalogueBooks on page load
   displayCatalogueBooks();
 
   // Function to update borrowed books section after borrowing from the catalogue
@@ -744,8 +727,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return entry;
       });
 
-    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0
-      ? `<div class="col-12">
+    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0 ? `<div class="col-12">
            <div class="alert alert-info">
              You haven't borrowed any books yet. 
              <a href="catalogue.html" class="alert-link">Browse our catalogue</a> to find books to borrow.
@@ -788,11 +770,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+//display borrow history
 document.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
   const historyTableBody = document.getElementById("historyTableBody");
 
-  if (!historyTableBody) return; // Only run on history page
+  if (!historyTableBody) return; 
 
   const history = JSON.parse(localStorage.getItem("borrowHistory")) || [];
   const userHistory = history.filter(h => h.user === user?.email);
