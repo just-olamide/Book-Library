@@ -140,6 +140,18 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBooks(books);
   }
 
+  // Function to synchronize book availability with borrow history
+  function synchronizeBookAvailability() {
+    const borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
+
+    books.forEach(book => {
+      const isBorrowed = borrowHistory.some(entry => entry.book === book.title && !entry.returned);
+      book.available = !isBorrowed;
+    });
+
+    localStorage.setItem("books", JSON.stringify(books));
+  }
+
   // Load books localStorage or fetch fresh
   checkLogin();
   const saved = JSON.parse(localStorage.getItem("books"));
@@ -150,6 +162,8 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     loadBooks();
   }
+
+  synchronizeBookAvailability();
 
   searchInput.addEventListener("input", filterBooks);
   genreFilter.addEventListener("change", filterBooks);
@@ -472,6 +486,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const today = new Date();
     const borrowedBooks = borrowHistory.filter(entry => !entry.returned);
 
+    if (!overdueBooksElement) {
+      console.warn("Element with ID 'overdueBooks' not found in the DOM.");
+      return;
+    }
+
     overdueBooksElement.innerHTML = borrowedBooks.map(entry => {
       const dueDate = new Date(entry.dueDate);
       const isOverdue = dueDate < today;
@@ -522,8 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(`The book "${bookTitle}" has been successfully returned.`);
     displayBorrowedBooks();
     calculateLibraryStatus();
-    
-  
+    renderBooks(books); // Refresh the catalogue to reflect the updated availability
   }
 
   displayBorrowedBooks();
