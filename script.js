@@ -522,6 +522,8 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(`The book "${bookTitle}" has been successfully returned.`);
     displayBorrowedBooks();
     calculateLibraryStatus();
+    
+  
   }
 
   displayBorrowedBooks();
@@ -632,7 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
         borrowHistory[historyIndex].dateReturned = returnDate.toLocaleString();
         localStorage.setItem("borrowHistory", JSON.stringify(borrowHistory));
       }
-
+      
       alert(`Thank you for returning "${bookTitle}"`);
       location.reload();
     });
@@ -641,9 +643,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const catalogueBooksDiv = document.getElementById("catalogueBooks");
 
   // Function to display available books in the catalogue
-  function displayCatalogueBooks() {    const books = JSON.parse(localStorage.getItem("books")) || [];
+  function displayCatalogueBooks() {   
+     const books = JSON.parse(localStorage.getItem("books")) || [];
     const availableBooks = books.filter(book => book.available);
-
+    
     catalogueBooksDiv.innerHTML = availableBooks.map(book => {
       return `
         <div class="col-md-6 col-lg-4">
@@ -682,6 +685,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!user) return alert("You must be logged in.");
 
     const bookIndex = books.findIndex(book => book.title === bookTitle);
+    window.location.reload()
+
     if (bookIndex !== -1) {
       books[bookIndex].available = false;
 
