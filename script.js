@@ -617,6 +617,8 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Update book availability
       const bookIndex = books.findIndex(b => b.title === bookTitle);
+    window.location.reload()
+
       if (bookIndex !== -1) {
         books[bookIndex].available = true;
         localStorage.setItem("books", JSON.stringify(books));
@@ -646,7 +648,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function displayCatalogueBooks() {   
      const books = JSON.parse(localStorage.getItem("books")) || [];
     const availableBooks = books.filter(book => book.available);
-    
     catalogueBooksDiv.innerHTML = availableBooks.map(book => {
       return `
         <div class="col-md-6 col-lg-4">
