@@ -114,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!user) return alert("You must be logged in.");
     
-    // Prevent admin from borrowing books
     if (user.role === 'admin') {
       alert("Administrators cannot borrow books. Please use a regular user account to borrow books.");
       return;
@@ -727,10 +726,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return entry;
       });
 
-    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0 ? `<div class="col-12">
+    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0
+      ? `<div class="col-12">
            <div class="alert alert-info">
              You haven't borrowed any books yet. 
-             <a href="catalogue.html" class="alert-link">Browse our catalogue</a> to find books to borrow.
+             <a href="#catalogueBooks" class="alert-link">Browse our catalogue</a> to find books to borrow.
            </div>
          </div>`
       : userBorrowedBooks.map(book => {
@@ -764,6 +764,7 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener('click', function() {
         const bookTitle = this.getAttribute('data-book-title');
         returnBorrowedBook(bookTitle);
+        displayCatalogueBooks(); // Ensure catalogue is refreshed
       });
     });
   }
