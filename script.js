@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBooks(books);
   }
 
-  // Function to synchronize book availability with borrow history
+  // Function to update book availability with borrow history
   function synchronizeBookAvailability() {
     const borrowHistory = JSON.parse(localStorage.getItem("borrowHistory")) || [];
 
@@ -200,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const showSignup = document.getElementById("showSignup");
   const showLogin = document.getElementById("showLogin");
 
-  // Toggle between forms
   showSignup?.addEventListener("click", (e) => {
     e.preventDefault();
     loginForm.classList.add("d-none");
