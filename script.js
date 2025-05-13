@@ -345,8 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Sort by most borrowed
-    const mostBorrowedBooks = Object.entries(bookCounts)
-      .sort((a, b) => b[1] - a[1])
+    const mostBorrowedBooks = Object.entries(bookCounts).sort((a, b) => b[1] - a[1])
       .slice(0, 5); 
 
     mostBorrowedElement.innerHTML = mostBorrowedBooks
@@ -540,7 +539,7 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(`The book "${bookTitle}" has been successfully returned.`);
     displayBorrowedBooks();
     calculateLibraryStatus();
-    renderBooks(books); // Refresh the catalogue to reflect the updated availability
+    renderBooks(books); 
   }
 
   displayBorrowedBooks();
@@ -837,5 +836,3 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
   localStorage.removeItem("loggedInUser");
   window.location.href = "index.html";
 });
-
-

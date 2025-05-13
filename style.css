@@ -135,18 +135,28 @@ footer {
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .subb {
     width: 100%;
     margin-bottom: 20px;
   }
+
+  #welcome{
+    width: 100%; 
+   }
   
   .hero {
     height: 60vh;
+    /* overflow: hidden; */
+    position: relative;
   }
-}
 
+  .navbar a{
+    width: 90%;
+    font-size: 14px;
+  }
+  
+}
 /* Footer Styling */
 footer {
   background-color: var(--bg-light);
