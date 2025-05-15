@@ -11,8 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
    function checkLogin() {
      const user = localStorage.getItem("loggedInUser");
      if (!user) {
-    //  alert("Please log in first.");
-    //   // window.location.href = "login.html";
+      return;
     }
   }
   // Load books
@@ -61,10 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bookArray.forEach((book, index) => {
       const col = document.createElement("div");
-      col.className = "col-md-4 mb-4";
+      col.className = "col-md-4 mb-5";
       
       col.innerHTML = `
-        <div class="card h-100">
+        <div class="card h-100 ">
           <img 
             src="${book.cover}" 
             class="card-img-top"
