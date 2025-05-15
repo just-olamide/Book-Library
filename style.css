@@ -140,6 +140,11 @@ footer {
     width: 100%;
     margin-bottom: 20px;
   }
+  .card {
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
 
   #welcome{
     width: 100%; 
