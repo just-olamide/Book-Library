@@ -624,13 +624,12 @@ document.addEventListener("DOMContentLoaded", () => {
     borrowedBooksDiv.appendChild(col);
   });
 
-  // Handle return book functionality
+  // Handle return book functionality and update book availability
   document.querySelectorAll('.return-book').forEach(button => {
     button.addEventListener('click', function() {
       const bookTitle = this.getAttribute('data-book-title');
       const returnDate = new Date();
       
-      // Update book availability
       const bookIndex = books.findIndex(b => b.title === bookTitle);
     window.location.reload()
 
@@ -747,14 +746,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return entry;
       });
 
-    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0
-      ? `<div class="col-12">
+    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0 ? `<div class="col-12">
            <div class="alert alert-info">
              You haven't borrowed any books yet. 
              <a href="#catalogueBooks" class="alert-link">Browse our catalogue</a> to find books to borrow.
            </div>
-         </div>`
-      : userBorrowedBooks.map(book => {
+         </div>`: userBorrowedBooks.map(book => {
           const borrowDate = new Date(book.date);
           const dueDate = new Date(book.dueDate);
           return `
@@ -785,7 +782,7 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener('click', function() {
         const bookTitle = this.getAttribute('data-book-title');
         returnBorrowedBook(bookTitle);
-        displayCatalogueBooks(); // Ensure catalogue is refreshed
+        displayCatalogueBooks();
       });
     });
   }
@@ -831,7 +828,41 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
 document.getElementById("logoutBtn")?.addEventListener("click", () => {
   localStorage.removeItem("loggedInUser");
   window.location.href = "index.html";
 });
+
+// fuction to download borrowing history as CSV
+function downloadBorrowHistoryAsCSV() {
+  const history = JSON.parse(localStorage.getItem('borrowHistory') || '[]');
+  if (!history.length) {
+    return alert('No borrowing history to export.');
+  }
+
+  const keys = Object.keys(history[0]);
+  const header = keys.join(',') + '\n';
+
+  // Build data rows
+  const rows = history.map(entry => {
+    return keys.map(k => {
+      const v = String(entry[k] ?? '');
+      return `"${v.replace(/"/g, '""')}"`;
+    }).join(',');
+  }).join('\n');
+
+  // Create a Blob and trigger download
+  const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'borrowing_history.csv';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('exportCsvBtn').addEventListener('click', downloadBorrowHistoryAsCSV);
