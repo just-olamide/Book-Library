@@ -140,11 +140,19 @@ footer {
     width: 100%;
     margin-bottom: 20px;
   }
+
+  #loginForm{
+  width: 90%;
+}
+#signupForm{
+  width: 90%;
+}
   .card {
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
 }
+
 
   #welcome{
     width: 100%; 

@@ -583,7 +583,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return entry;
     });
 
-  if (userBorrowedBooks.length === 0) {
+  if (userBorrowedBooks.length < -1) {
     borrowedBooksDiv.innerHTML = `
       <div class="col-12">
         <div class="alert alert-info">
@@ -729,63 +729,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   displayCatalogueBooks();
 
-  // Function to update borrowed books section after borrowing from the catalogue
-  function displayBorrowedBooks() {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    const userBorrowedBooks = borrowHistory
-      .filter(entry => entry.user === user.email && !entry.returned)
-      .map(entry => {
-        const book = books.find(b => b.title === entry.book);
-        if (book) {
-          return {
-            ...entry,
-            cover: book.cover,
-            genre: book.genre
-          };
-        }
-        return entry;
-      });
-
-    borrowedBooksDiv.innerHTML = userBorrowedBooks.length === 0 ? `<div class="col-12">
-           <div class="alert alert-info">
-             You haven't borrowed any books yet. 
-             <a href="#catalogueBooks" class="alert-link">Browse our catalogue</a> to find books to borrow.
-           </div>
-         </div>`: userBorrowedBooks.map(book => {
-          const borrowDate = new Date(book.date);
-          const dueDate = new Date(book.dueDate);
-          return `
-            <div class="col-md-6 col-lg-4">
-              <div class="card h-100 shadow-sm">
-                <img 
-                  src="${book.cover || 'images/book image.jpg'}" 
-                  class="card-img-top" 
-                  alt="${book.book}"
-                  style="height: 300px; object-fit: cover;"
-                  onerror="this.src='images/book image.jpg'; this.onerror=null;"
-                >
-                <div class="card-body">
-                  <h5 class="card-title">${book.book}</h5>
-                  <p class="card-text mb-1"><strong>Author:</strong> ${book.author}</p>
-                  ${book.genre ? `<p class="card-text mb-1"><strong>Genre:</strong> ${book.genre}</p>` : ''}
-                  <p class="card-text mb-1"><strong>Borrowed:</strong> ${borrowDate.toLocaleDateString()}</p>
-                  <p class="card-text text-danger mb-3"><strong>Due:</strong> ${dueDate.toLocaleDateString()}</p>
-                  <button class="btn btn-success w-100 return-book" data-book-title="${book.book}">Return Book</button>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-    // Add event listeners for return buttons
-    document.querySelectorAll('.return-book').forEach(button => {
-      button.addEventListener('click', function() {
-        const bookTitle = this.getAttribute('data-book-title');
-        returnBorrowedBook(bookTitle);
-        displayCatalogueBooks();
-      });
-    });
-  }
 
 });
 
